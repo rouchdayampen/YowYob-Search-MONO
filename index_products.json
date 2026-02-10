@@ -1,0 +1,261 @@
+{
+    "index": {
+        "_id": "boulangerie-1"
+    }
+}
+{
+    "id": "boulangerie-1",
+    "title": "Boulangerie La Mie Dorée",
+    "description": "Boulangerie artisanale proposant pains frais, viennoiseries et pâtisseries maison. Livraison possible dans Yaoundé.",
+    "price": 500,
+    "category": "Boulangerie",
+    "type": "product",
+    "city": "Yaoundé",
+    "latitude": 3.8667,
+    "longitude": 11.5167,
+    "location": "3.8667,11.5167",
+    "rating": 4.5,
+    "images": [
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"
+    ],
+    "tags": [
+        "pain",
+        "viennoiserie",
+        "pâtisserie"
+    ]
+}
+{
+    "index": {
+        "_id": "coiffure-1"
+    }
+}
+{
+    "id": "coiffure-1",
+    "title": "Salon Beauty Queen",
+    "description": "Salon de coiffure et soins esthétiques. Tresses, tissages, défrisages et manucure. Produits professionnels.",
+    "price": 3000,
+    "category": "Coiffure",
+    "type": "service",
+    "city": "Yaoundé",
+    "latitude": 3.8710,
+    "longitude": 11.5230,
+    "location": "3.8710,11.5230",
+    "rating": 4.2,
+    "images": [
+        "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400"
+    ],
+    "tags": [
+        "coiffure",
+        "beauté",
+        "tresses"
+    ]
+}
+{
+    "index": {
+        "_id": "pharma-1"
+    }
+}
+{
+    "id": "pharma-1",
+    "title": "Pharmacie du Centre",
+    "description": "Pharmacie ouverte 24h/24. Médicaments, parapharmacie et conseils santé. Située au centre-ville de Yaoundé.",
+    "price": 0,
+    "category": "Pharmacie",
+    "type": "service",
+    "city": "Yaoundé",
+    "latitude": 3.8620,
+    "longitude": 11.5200,
+    "location": "3.8620,11.5200",
+    "rating": 4.7,
+    "images": [
+        "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=400"
+    ],
+    "tags": [
+        "santé",
+        "médicaments",
+        "pharmacie"
+    ]
+}
+{
+    "index": {
+        "_id": "taxi-1"
+    }
+}
+{
+    "id": "taxi-1",
+    "title": "YaoTaxi Express",
+    "description": "Service de taxi rapide et fiable à Yaoundé. Réservation par téléphone ou WhatsApp. Tarifs négociables.",
+    "price": 1500,
+    "category": "Transport",
+    "type": "service",
+    "city": "Yaoundé",
+    "latitude": 3.8480,
+    "longitude": 11.5021,
+    "location": "3.8480,11.5021",
+    "rating": 3.8,
+    "images": [
+        "https://images.unsplash.com/photo-1549317661-bd32c8ce0afa?w=400"
+    ],
+    "tags": [
+        "taxi",
+        "transport",
+        "déplacement"
+    ]
+}
+{
+    "index": {
+        "_id": "resto-2"
+    }
+}
+{
+    "id": "resto-2",
+    "title": "Restaurant Chez Mama Ngono",
+    "description": "Cuisine camerounaise traditionnelle. Ndolé, eru, poulet DG et poisson braisé. Cadre chaleureux au quartier Mvan.",
+    "price": 2500,
+    "category": "Restaurant",
+    "type": "product",
+    "city": "Yaoundé",
+    "latitude": 3.8340,
+    "longitude": 11.4950,
+    "location": "3.8340,11.4950",
+    "rating": 4.6,
+    "images": [
+        "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400"
+    ],
+    "tags": [
+        "restaurant",
+        "camerounais",
+        "ndolé",
+        "poulet DG"
+    ]
+}
+{
+    "index": {
+        "_id": "boutique-1"
+    }
+}
+{
+    "id": "boutique-1",
+    "title": "Fashion Mode Centrale",
+    "description": "Boutique de prêt-à-porter homme et femme. Dernières tendances africaines et européennes. Prix accessibles.",
+    "price": 8000,
+    "category": "Mode",
+    "type": "product",
+    "city": "Yaoundé",
+    "latitude": 3.8750,
+    "longitude": 11.5100,
+    "location": "3.8750,11.5100",
+    "rating": 4.0,
+    "images": [
+        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400"
+    ],
+    "tags": [
+        "mode",
+        "vêtements",
+        "fashion"
+    ]
+}
+{
+    "index": {
+        "_id": "cyber-1"
+    }
+}
+{
+    "id": "cyber-1",
+    "title": "CyberMax Internet Café",
+    "description": "Cybercafé moderne avec connexion fibre optique. Impression, photocopie, scanning et transfert de fichiers.",
+    "price": 200,
+    "category": "Services Internet",
+    "type": "service",
+    "city": "Yaoundé",
+    "latitude": 3.8550,
+    "longitude": 11.5150,
+    "location": "3.8550,11.5150",
+    "rating": 3.5,
+    "images": [
+        "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400"
+    ],
+    "tags": [
+        "internet",
+        "impression",
+        "cybercafé"
+    ]
+}
+{
+    "index": {
+        "_id": "gym-1"
+    }
+}
+{
+    "id": "gym-1",
+    "title": "FitZone Yaoundé",
+    "description": "Salle de sport avec équipements modernes. Musculation, fitness, yoga et cours de boxe. Coaching personnalisé.",
+    "price": 15000,
+    "category": "Sport",
+    "type": "service",
+    "city": "Yaoundé",
+    "latitude": 3.8800,
+    "longitude": 11.5080,
+    "location": "3.8800,11.5080",
+    "rating": 4.4,
+    "images": [
+        "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400"
+    ],
+    "tags": [
+        "sport",
+        "musculation",
+        "fitness"
+    ]
+}
+{
+    "index": {
+        "_id": "supermarche-1"
+    }
+}
+{
+    "id": "supermarche-1",
+    "title": "Super U Nlongkak",
+    "description": "Supermarché avec large gamme de produits alimentaires, boissons et articles ménagers. Parking gratuit.",
+    "price": 0,
+    "category": "Supermarché",
+    "type": "product",
+    "city": "Yaoundé",
+    "latitude": 3.8900,
+    "longitude": 11.5120,
+    "location": "3.8900,11.5120",
+    "rating": 4.1,
+    "images": [
+        "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400"
+    ],
+    "tags": [
+        "supermarché",
+        "courses",
+        "alimentation"
+    ]
+}
+{
+    "index": {
+        "_id": "auto-1"
+    }
+}
+{
+    "id": "auto-1",
+    "title": "Garage Auto Pro Mendong",
+    "description": "Réparation auto, vidange, pneus et diagnostic électronique. Toutes marques. Devis gratuit.",
+    "price": 5000,
+    "category": "Automobile",
+    "type": "service",
+    "city": "Yaoundé",
+    "latitude": 3.8450,
+    "longitude": 11.4800,
+    "location": "3.8450,11.4800",
+    "rating": 4.3,
+    "images": [
+        "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400"
+    ],
+    "tags": [
+        "garage",
+        "réparation",
+        "voiture"
+    ]
+}

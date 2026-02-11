@@ -1,13 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  
-  // Internationalisation
+
+  // Internationalisation (Désactivé pour App Router sans [lang])
+  /*
   i18n: {
     locales: ['fr', 'en'],
     defaultLocale: 'fr',
     localeDetection: false,
   },
+  */
 
   // Images
   images: {

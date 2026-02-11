@@ -53,9 +53,18 @@ public class ElasticsearchConfig extends ReactiveElasticsearchConfiguration {
                         return httpClientBuilder.addInterceptorLast(
                                 (org.apache.http.HttpRequestInterceptor) (org.apache.http.HttpRequest request,
                                         org.apache.http.protocol.HttpContext context) -> {
+                                    System.out.println(
+                                            ">>> INTERCEPTOR RUNNING for URI: " + request.getRequestLine().getUri());
+
+                                    // Remove existing headers to avoid duplicates or conflicts
+                                    request.removeHeaders("Content-Type");
+                                    request.removeHeaders("Accept");
+
                                     // Unconditionally overwrite these headers
                                     request.setHeader("Content-Type", "application/json");
                                     request.setHeader("Accept", "application/json");
+
+                                    System.out.println(">>> INTERCEPTOR SET HEADERS: Content-Type=application/json");
                                 });
                     });
             return restClientBuilder;

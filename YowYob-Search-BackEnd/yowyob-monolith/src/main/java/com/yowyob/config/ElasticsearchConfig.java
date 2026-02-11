@@ -8,6 +8,8 @@ import org.springframework.lang.NonNull;
 
 import java.net.URI;
 
+import org.elasticsearch.client.RestClientBuilder;
+
 @Configuration
 public class ElasticsearchConfig extends ReactiveElasticsearchConfiguration {
 
@@ -37,7 +39,7 @@ public class ElasticsearchConfig extends ReactiveElasticsearchConfiguration {
         }
 
         // Fix for 406 Not Acceptable: Force headers via low-level RestClientBuilder
-        builder.withClientConfigurer(restClientBuilder -> {
+        builder.withClientConfigurer((RestClientBuilder restClientBuilder) -> {
             restClientBuilder.setDefaultHeaders(new org.apache.http.Header[] {
                     new org.apache.http.message.BasicHeader("Content-Type", "application/json"),
                     new org.apache.http.message.BasicHeader("Accept", "application/json")

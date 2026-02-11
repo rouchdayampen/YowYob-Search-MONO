@@ -36,11 +36,14 @@ public class ElasticsearchConfig extends ReactiveElasticsearchConfiguration {
             }
         }
 
-        // Fix for 406 Not Acceptable (Bonsai/OpenSearch vs Elastic Client 8)
-        // We set a header to force JSON, hoping to override the versioned vendor header
-        org.springframework.data.elasticsearch.support.HttpHeaders headers = new org.springframework.data.elasticsearch.support.HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        builder.withDefaultHeaders(headers);
+        // Fix for 406 Not Acceptable: Force headers via low-level RestClientBuilder
+        builder.withClientConfigurer(restClientBuilder -> {
+            restClientBuilder.setDefaultHeaders(new org.apache.http.Header[] {
+                    new org.apache.http.message.BasicHeader("Content-Type", "application/json"),
+                    new org.apache.http.message.BasicHeader("Accept", "application/json")
+            });
+            return restClientBuilder;
+        });
 
         // Important: Spring Data ES 5.x by default sends the compatibility header.
         // There isn't a simple "disableCompatibilityHeader" method in the builder

@@ -1,0 +1,104 @@
+# ===================================================================
+# Docker Profile Configuration for Crawler Service
+# ===================================================================
+
+server:
+  port: 8086
+
+spring:
+  application:
+    name: crawler-service
+
+  # H2 DataSource Configuration (Embedded Database)
+  datasource:
+    url: jdbc:h2:mem:crawler_db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  h2:
+    console:
+      enabled: false
+
+  # JPA/Hibernate Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+  # Elasticsearch Configuration
+  elasticsearch:
+    uris: ${SPRING_ELASTICSEARCH_URIS:http://yowyob-elasticsearch:9200}
+
+  # Redis Configuration
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:yowyob-redis}
+      port: ${SPRING_REDIS_PORT:6379}
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: crawler-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.yowyob.auth.event.UserCreatedEvent
+    properties:
+      security.protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
+
+# RabbitMQ Configuration
+rabbitmq:
+  host: rabbitmq
+  port: 5672
+  username: guest
+  password: guest
+
+# Elasticsearch:
+elasticsearch:
+  host: elasticsearch
+  port: 9200
+  index:
+    name: crawler-index
+  bulk:
+    size: 100
+
+# Service Connectors Configuration
+service:
+  listing:
+    enabled: ${SERVICE_LISTING_ENABLED:false}
+    api:
+      url: ${LISTING_SERVICE_URL:http://localhost:8083}/api/listings
+  user:
+    api:
+      url: ${USER_SERVICE_URL:http://localhost:8084}/api/users
+      key: "${USER_SERVICE_API_KEY:}"
+    enabled: ${SERVICE_USER_ENABLED:false}
+  businessbook:
+    enabled: ${SERVICE_BUSINESSBOOK_ENABLED:true}
+    api:
+      url: ${BUSINESSBOOK_SERVICE_URL:https://businessbookr-production.up.railway.app/api/businessbook/search/documents}
+
+# Crawler Configuration
+crawler:
+  scheduler:
+    enabled: true
+    fixed-rate: 300000
+    initial-delay: 15000
+  http:
+    timeout: 30000
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:yowyob-super-secret-key-change-this-in-production-minimum-256-bits}
+  expiration: 3600000
+
+# Logging Configuration
+logging:
+  level:
+    com.yowyob.crawler: INFO
+    org.springframework: WARN
+    org.hibernate: WARN

@@ -38,11 +38,17 @@ public class ElasticsearchConfig extends ReactiveElasticsearchConfiguration {
             }
         }
 
-        // Fix for 406 Not Acceptable: Force headers via low-level RestClientBuilder
+        // Fix for 406 Not Acceptable: Use Interceptor to strip incompatible headers
         builder.withClientConfigurer((RestClientBuilder restClientBuilder) -> {
-            restClientBuilder.setDefaultHeaders(new org.apache.http.Header[] {
-                    new org.apache.http.message.BasicHeader("Content-Type", "application/json"),
-                    new org.apache.http.message.BasicHeader("Accept", "application/json")
+            restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> {
+                return httpClientBuilder.addInterceptorLast(
+                        (org.apache.http.HttpRequestInterceptor) (request, context) -> {
+                            org.apache.http.Header contentType = request.getFirstHeader("Content-Type");
+                            if (contentType != null && contentType.getValue().contains("compatible-with=8")) {
+                                request.setHeader("Content-Type", "application/json");
+                                request.setHeader("Accept", "application/json");
+                            }
+                        });
             });
             return restClientBuilder;
         });

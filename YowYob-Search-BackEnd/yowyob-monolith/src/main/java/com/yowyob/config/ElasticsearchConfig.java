@@ -38,18 +38,26 @@ public class ElasticsearchConfig extends ReactiveElasticsearchConfiguration {
             }
         }
 
-        // Fix for 406 Not Acceptable: Use Interceptor to strip incompatible headers
+        // Fix for 406 Not Acceptable: STRICTLY force headers via low-level
+        // RestClientBuilder
         builder.withClientConfigurer((RestClientBuilder restClientBuilder) -> {
-            restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> {
-                return httpClientBuilder.addInterceptorLast(
-                        (org.apache.http.HttpRequestInterceptor) (request, context) -> {
-                            org.apache.http.Header contentType = request.getFirstHeader("Content-Type");
-                            if (contentType != null && contentType.getValue().contains("compatible-with=8")) {
-                                request.setHeader("Content-Type", "application/json");
-                                request.setHeader("Accept", "application/json");
-                            }
-                        });
+            // 1. Set default headers
+            restClientBuilder.setDefaultHeaders(new org.apache.http.Header[] {
+                    new org.apache.http.message.BasicHeader("Content-Type", "application/json"),
+                    new org.apache.http.message.BasicHeader("Accept", "application/json")
             });
+
+            // 2. Add interceptor to OVERWRITE any headers added by Spring Data / Client
+            restClientBuilder.setHttpClientConfigCallback(
+                    (org.apache.http.impl.nio.client.HttpAsyncClientBuilder httpClientBuilder) -> {
+                        return httpClientBuilder.addInterceptorLast(
+                                (org.apache.http.HttpRequestInterceptor) (org.apache.http.HttpRequest request,
+                                        org.apache.http.protocol.HttpContext context) -> {
+                                    // Unconditionally overwrite these headers
+                                    request.setHeader("Content-Type", "application/json");
+                                    request.setHeader("Accept", "application/json");
+                                });
+                    });
             return restClientBuilder;
         });
 

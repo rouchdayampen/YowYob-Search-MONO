@@ -7,10 +7,27 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
+/**
+ * Contrôleur REST pour la gestion des profils utilisateurs et de l'historique
+ * de recherche.
+ * Expose les endpoints CRUD pour les profils et l'historique.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -85,6 +102,24 @@ public class UserController {
             return ResponseEntity.status(401).build();
         userService.clearSearchHistory(UUID.fromString(userId));
         return ResponseEntity.noContent().build();
+    }
+
+    // --- Stubbed Endpoints for Profile UI until Modules are fully developed ---
+
+    @Operation(summary = "Get User Favorites", description = "Stubbed endpoint for favorites")
+    @GetMapping("/favorites")
+    public ResponseEntity<java.util.List<Object>> getUserFavorites(@RequestHeader("X-User-Id") String userId) {
+        if (userId == null)
+            return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(new java.util.ArrayList<>());
+    }
+
+    @Operation(summary = "Get User Messages Count", description = "Stubbed endpoint for messages count")
+    @GetMapping("/messages/count")
+    public ResponseEntity<java.util.Map<String, Integer>> getUserMessagesCount(@RequestHeader("X-User-Id") String userId) {
+        if (userId == null)
+            return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(java.util.Map.of("count", 0));
     }
 
     @GetMapping("/health")

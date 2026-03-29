@@ -12,8 +12,8 @@ scrape_configs:
   - job_name: app-logs
     static_configs:
       - targets:
-          - api-gateway
+          - localhost
         labels:
           job: app-logs
-          app_name: api-gateway
+          app_name: yowyob-monolith
           __path__: /var/log/app/**/*.log

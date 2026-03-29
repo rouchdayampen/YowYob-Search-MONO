@@ -1,5 +1,13 @@
+/**
+ * Service for managing product and service listings.
+ * Handles CRUD operations and publishes events via RabbitMQ.
+ * @author Matteo Owona, Rouchda Yampen
+ * @date 2024-01-14
+ * @updated 2025-02-11
+ */
 package com.yowyob.listing.service;
 
+import com.yowyob.auth.exception.ResourceNotFoundException;
 import com.yowyob.config.RabbitMQConfig;
 import com.yowyob.listing.entity.Listing;
 import com.yowyob.listing.entity.ListingStatus;
@@ -21,59 +29,101 @@ public class ListingService {
     private final ListingRepository listingRepository;
     private final RabbitTemplate rabbitTemplate;
 
+    /**
+     * Creates a new listing and publishes a creation event.
+     *
+     * @param listing the listing entity to create
+     * @return the saved listing with generated ID and timestamps
+     */
     public Listing createListing(Listing listing) {
         listing.setCreatedAt(LocalDateTime.now());
         listing.setUpdatedAt(LocalDateTime.now());
         if (listing.getStatus() == null) {
             listing.setStatus(ListingStatus.ACTIVE);
         }
-        Listing savedListing = listingRepository.save(listing);
+        Listing saved_listing = listingRepository.save(listing);
 
-        publishEvent(savedListing, "CREATED");
+        publishEvent(saved_listing, "CREATED");
 
-        return savedListing;
+        return saved_listing;
     }
 
+    /**
+     * Retrieves all listings from the database.
+     *
+     * @return list of all listings
+     */
     public List<Listing> getAllListings() {
         return listingRepository.findAll();
     }
 
-    public List<Listing> searchListings(LocalDateTime updatedAfter) {
-        if (updatedAfter == null) {
+    /**
+     * Searches listings updated after a given timestamp.
+     *
+     * @param updated_after the timestamp filter, null returns all listings
+     * @return list of matching listings
+     */
+    public List<Listing> searchListings(LocalDateTime updated_after) {
+        if (updated_after == null) {
             return listingRepository.findAll();
         }
-        return listingRepository.findByUpdatedAtAfter(updatedAfter);
+        return listingRepository.findByUpdatedAtAfter(updated_after);
     }
 
+    /**
+     * Retrieves a listing by its unique identifier.
+     *
+     * @param id the listing UUID
+     * @return optional containing the listing if found
+     */
     public Optional<Listing> getListingById(UUID id) {
         return listingRepository.findById(id);
     }
 
-    public List<Listing> getListingsBySellerId(UUID sellerId) {
-        return listingRepository.findBySellerId(sellerId);
+    /**
+     * Retrieves all listings belonging to a specific seller.
+     *
+     * @param seller_id the seller UUID
+     * @return list of listings for the seller
+     */
+    public List<Listing> getListingsBySellerId(UUID seller_id) {
+        return listingRepository.findBySellerId(seller_id);
     }
 
-    public Listing updateListing(UUID id, Listing listingDetails) {
+    /**
+     * Updates an existing listing and publishes an update event.
+     *
+     * @param id              the listing UUID to update
+     * @param listing_details the new listing details
+     * @return the updated listing
+     * @throws ResourceNotFoundException if the listing does not exist
+     */
+    public Listing updateListing(UUID id, Listing listing_details) {
         Listing listing = listingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Listing not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Listing", id.toString()));
 
-        listing.setTitle(listingDetails.getTitle());
-        listing.setDescription(listingDetails.getDescription());
-        listing.setPrice(listingDetails.getPrice());
-        listing.setCategory(listingDetails.getCategory());
-        listing.setAddress(listingDetails.getAddress());
-        listing.setLatitude(listingDetails.getLatitude());
-        listing.setLongitude(listingDetails.getLongitude());
-        listing.setStatus(listingDetails.getStatus());
+        listing.setTitle(listing_details.getTitle());
+        listing.setDescription(listing_details.getDescription());
+        listing.setPrice(listing_details.getPrice());
+        listing.setCategory(listing_details.getCategory());
+        listing.setAddress(listing_details.getAddress());
+        listing.setLatitude(listing_details.getLatitude());
+        listing.setLongitude(listing_details.getLongitude());
+        listing.setStatus(listing_details.getStatus());
         listing.setUpdatedAt(LocalDateTime.now());
 
-        Listing updatedListing = listingRepository.save(listing);
+        Listing updated_listing = listingRepository.save(listing);
 
-        publishEvent(updatedListing, "UPDATED");
+        publishEvent(updated_listing, "UPDATED");
 
-        return updatedListing;
+        return updated_listing;
     }
 
+    /**
+     * Deletes a listing and publishes a deletion event.
+     *
+     * @param id the listing UUID to delete
+     */
     public void deleteListing(UUID id) {
         Listing listing = listingRepository.findById(id).orElse(null);
         if (listing != null) {
@@ -82,7 +132,13 @@ public class ListingService {
         }
     }
 
-    private void publishEvent(Listing listing, String eventType) {
+    /**
+     * Publishes a listing event to RabbitMQ for asynchronous processing.
+     *
+     * @param listing    the listing that triggered the event
+     * @param event_type the type of event (CREATED, UPDATED, DELETED)
+     */
+    private void publishEvent(Listing listing, String event_type) {
         ListingEvent event = ListingEvent.builder()
                 .id(listing.getId())
                 .title(listing.getTitle())
@@ -94,9 +150,9 @@ public class ListingService {
                 .longitude(listing.getLongitude())
                 .status(listing.getStatus().name())
                 .sellerId(listing.getSellerId())
-                .eventType(eventType)
+                .eventType(event_type)
                 .build();
 
-        rabbitTemplate.convertAndSend(RabbitMQConfig.LISTING_EXCHANGE, "listing." + eventType.toLowerCase(), event);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.LISTING_EXCHANGE, "listing." + event_type.toLowerCase(), event);
     }
 }

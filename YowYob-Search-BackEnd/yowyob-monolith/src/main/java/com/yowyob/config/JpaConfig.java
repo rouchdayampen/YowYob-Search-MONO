@@ -17,6 +17,14 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configuration JPA multi-datasources pour le monolithe.
+ * Gère trois datasources séparés : auth, users et listings,
+ * chacun avec son propre EntityManagerFactory et TransactionManager.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Configuration
 public class JpaConfig {
 

@@ -8,6 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * Listener RabbitMQ pour les événements listing côté notification.
+ * Envoie une notification email lors de la création d'une nouvelle annonce.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Component("notificationListingEventListener")
 @Slf4j
 @RequiredArgsConstructor

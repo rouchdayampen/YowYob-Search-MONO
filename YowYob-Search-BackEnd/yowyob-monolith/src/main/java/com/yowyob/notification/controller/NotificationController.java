@@ -11,6 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Contrôleur REST pour le module notification.
+ * Expose des endpoints de test d'envoi d'email et de vérification santé.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @RestController
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor

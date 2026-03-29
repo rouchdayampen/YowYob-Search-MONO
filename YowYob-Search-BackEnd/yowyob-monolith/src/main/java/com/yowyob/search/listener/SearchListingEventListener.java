@@ -8,6 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * Listener RabbitMQ pour les événements listing côté recherche.
+ * Indexe les nouvelles annonces dans Elasticsearch pour la recherche full-text.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Component("searchListingEventListener")
 @Slf4j
 @RequiredArgsConstructor

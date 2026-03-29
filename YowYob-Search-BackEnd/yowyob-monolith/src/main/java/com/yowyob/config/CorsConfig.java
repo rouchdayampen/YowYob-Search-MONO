@@ -10,6 +10,15 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Configuration CORS pour autoriser les requêtes cross-origin depuis le
+ * frontend.
+ * Les origines autorisées sont configurables via la propriété
+ * {@code cors.allowed-origins}.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Configuration
 public class CorsConfig {
 

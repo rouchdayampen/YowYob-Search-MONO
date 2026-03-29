@@ -18,7 +18,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -50,11 +54,21 @@ public class AuthController {
         return ResponseEntity.ok(authService.googleLogin(request));
     }
 
+    @org.springframework.web.bind.annotation.PutMapping("/change-password")
+    @Operation(summary = "Change Password", description = "Allows authenticated user to change their password")
+    public ResponseEntity<String> changePassword(
+            @org.springframework.web.bind.annotation.RequestHeader(value = "X-User-Id", required = false) String userId,
+            @Valid @RequestBody com.yowyob.auth.dto.ChangePasswordRequest request) {
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User account ID is missing in header.");
+        }
+        authService.changePassword(java.util.UUID.fromString(userId), request);
+        return ResponseEntity.ok("Password changed successfully.");
+    }
+
     @GetMapping("/health")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("Auth Service is running!");
     }
-
-    
 
 }

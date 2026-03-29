@@ -5,6 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO de réponse pour le calcul d'itinéraire OSRM.
+ * Contient la distance (mètres), la durée (secondes) et le tracé polyline.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Data
 @Builder
 @NoArgsConstructor

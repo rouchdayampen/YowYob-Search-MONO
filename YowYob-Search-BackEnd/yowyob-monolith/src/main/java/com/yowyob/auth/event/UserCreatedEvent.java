@@ -5,6 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Événement émis lors de la création d'un nouvel utilisateur.
+ * Utilisé pour la synchronisation inter-modules via RabbitMQ.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -9,6 +9,14 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration RabbitMQ pour la messagerie événementielle.
+ * Définit l'exchange fanout et les queues pour la synchronisation
+ * des listings entre les modules search et notification.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Configuration
 public class RabbitMQConfig {
 

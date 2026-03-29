@@ -8,6 +8,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ * Service de gestion des profils utilisateurs et de l'historique de recherche.
+ * Fournit les opérations CRUD sur les profils et la gestion de l'historique.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {

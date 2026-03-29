@@ -1,3 +1,10 @@
+/**
+ * Standard error response DTO for API error handling.
+ * Contains error details, error code, and timestamp.
+ * @author Matteo Owona, Rouchda Yampen
+ * @date 2024-01-14
+ * @updated 2025-02-11
+ */
 package com.yowyob.auth.dto;
 
 import lombok.AllArgsConstructor;

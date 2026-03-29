@@ -105,9 +105,15 @@ class GeoService {
             const response = await httpClient.get<any>(`${API_ENDPOINTS.GEO_ROUTE}?startLat=${start.lat}&startLon=${start.lng}&endLat=${end.lat}&endLon=${end.lng}&mode=${mode}`);
             // Ensure we have valid numbers
             if (response && typeof response.distance === 'number') {
+                let finalDuration = response.duration || this.estimateDuration(response.distance, mode);
+                // Override api duration for non-driving modes in case the backend doesn't support them properly yet
+                if (mode !== 'driving') {
+                    finalDuration = this.estimateDuration(response.distance, mode);
+                }
+
                 return {
                     distance: response.distance,
-                    duration: response.duration || this.estimateDuration(response.distance, mode),
+                    duration: finalDuration,
                     polyline: response.polyline
                 };
             }

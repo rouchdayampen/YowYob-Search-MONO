@@ -73,7 +73,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
-    container_name: yowyob-kafka
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -91,9 +91,7 @@ services:
   # ========== MONOLITH ==========
 
   yowyob-monolith:
-    build:
-      context: ./yowyob-monolith
-      dockerfile: Dockerfile
+    image: yowyob-monolith-semantic:latest
     container_name: yowyob-monolith
     ports:
       - "8080:8080"
@@ -127,8 +125,12 @@ services:
       # --- Geo ---
       - APP_NOMINATIM_URL=https://nominatim.openstreetmap.org
       - APP_NOMINATIM_USER_AGENT=YowYob-Search-Engine
+      # --- Logging ---
+      - LOGGING_FILE_NAME=/var/log/app/application.log
       # --- CORS ---
       - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
+      # --- Embeddings ---
+      - EMBEDDING_SERVICE_URL=http://yowyob-embeddings:8000
     depends_on:
       postgres:
         condition: service_healthy
@@ -138,8 +140,23 @@ services:
         condition: service_started
       rabbitmq:
         condition: service_started
+      yowyob-embeddings:
+        condition: service_started
     networks:
       - app-network
+
+  # ========== EMBEDDINGS SERVICE ==========
+
+  yowyob-embeddings:
+    image: yowyob-embeddings:latest
+    container_name: yowyob-embeddings
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    environment:
+      - HF_HUB_OFFLINE=1
+      - TRANSFORMERS_OFFLINE=1
 
   # ========== CRAWLER (Separate) ==========
 

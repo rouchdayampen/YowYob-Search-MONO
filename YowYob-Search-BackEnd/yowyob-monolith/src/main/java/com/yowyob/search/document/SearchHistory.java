@@ -11,6 +11,12 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.Instant;
 
+/**
+ * Document Elasticsearch représentant un historique de recherche utilisateur.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Data
 @Builder
 @AllArgsConstructor

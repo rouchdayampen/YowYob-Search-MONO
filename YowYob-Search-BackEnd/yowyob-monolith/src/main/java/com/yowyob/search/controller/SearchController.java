@@ -1,3 +1,10 @@
+/**
+ * REST controller for product search and indexing endpoints.
+ * Provides full-text search, autocomplete, proximity search, and product indexing.
+ * @author Matteo Owona, Rouchda Yampen
+ * @date 2024-01-14
+ * @updated 2025-02-11
+ */
 package com.yowyob.search.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,7 +15,14 @@ import com.yowyob.search.document.ProductDocument;
 import com.yowyob.search.dto.SearchResponse;
 import com.yowyob.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController

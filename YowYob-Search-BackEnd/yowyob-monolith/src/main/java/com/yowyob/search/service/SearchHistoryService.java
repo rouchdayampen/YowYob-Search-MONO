@@ -11,6 +11,13 @@ import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 
+/**
+ * Service de gestion de l'historique de recherche dans Elasticsearch.
+ * Persiste et récupère les requêtes de recherche des utilisateurs.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j

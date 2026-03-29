@@ -19,6 +19,14 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+/**
+ * Configuration Spring Security pour l'application réactive (WebFlux).
+ * Gère l'authentification JWT, les routes publiques/protégées et le filtre de
+ * sécurité.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Configuration
 @EnableWebFluxSecurity
 @RequiredArgsConstructor

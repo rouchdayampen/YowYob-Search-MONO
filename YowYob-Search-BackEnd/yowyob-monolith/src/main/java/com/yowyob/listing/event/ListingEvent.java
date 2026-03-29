@@ -9,6 +9,14 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/**
+ * Événement RabbitMQ émis lors de la création, modification ou suppression
+ * d'une annonce.
+ * Consommé par les modules search et notification pour la synchronisation.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Data
 @Builder
 @AllArgsConstructor

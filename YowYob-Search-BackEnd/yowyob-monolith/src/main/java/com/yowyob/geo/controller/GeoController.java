@@ -1,3 +1,10 @@
+/**
+ * REST controller for geolocation endpoints.
+ * Provides geocoding, distance calculation, IP-based location, and routing.
+ * @author Matteo Owona, Rouchda Yampen
+ * @date 2024-01-14
+ * @updated 2025-02-11
+ */
 package com.yowyob.geo.controller;
 
 import com.yowyob.geo.dto.DistanceRequest;
@@ -8,7 +15,13 @@ import com.yowyob.geo.service.GeoService;
 import com.yowyob.geo.service.IpGeolocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController

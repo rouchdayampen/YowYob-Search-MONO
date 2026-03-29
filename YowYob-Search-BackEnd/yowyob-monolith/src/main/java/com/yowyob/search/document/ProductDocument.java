@@ -62,4 +62,7 @@ public class ProductDocument {
 
     @Field(name = "images", type = FieldType.Keyword)
     private List<String> images;
+
+    @Field(name = "text_vector", type = FieldType.Dense_Vector, dims = 384, index = true)
+    private float[] textVector;
 }

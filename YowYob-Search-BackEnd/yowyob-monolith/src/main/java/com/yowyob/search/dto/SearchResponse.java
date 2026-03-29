@@ -6,6 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
+/**
+ * DTO de réponse pour les résultats de recherche.
+ * Contient le statut, la requête, le total et la liste des produits trouvés.
+ *
+ * @author YowYob Team
+ * @since 1.0.0
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:18
+    image: postgres:17-alpine
     container_name: yowyob-postgres
     environment:
       POSTGRES_DB: yowyob_auth
@@ -11,8 +11,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data_18_v3:/var/lib/postgresql
-      - ./init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
+      - postgres_data_17_v1:/var/lib/postgresql/data
+      # - ./init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
     networks:
       - app-network
     healthcheck:
@@ -367,7 +367,7 @@ services:
       - app-network
 
 volumes:
-  postgres_data_18_v3:
+  postgres_data_17_v1:
   elasticsearch_data:
   grafana_data:
   tempo_data:

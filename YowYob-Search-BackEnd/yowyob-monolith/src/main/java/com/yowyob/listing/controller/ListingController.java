@@ -41,6 +41,29 @@ public class ListingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(listingService.createListing(listing));
     }
 
+    @PostMapping("/crawler/ingest")
+    @Operation(summary = "Ingest scraped listing", description = "Endpoint exclusively for the Web Crawler to push cleaned external data")
+    public ResponseEntity<Listing> ingestScrapedListing(@RequestBody com.yowyob.listing.dto.ScrapedListingDto dto) {
+        // Map DTO to Listing Entity
+        Listing listing = new Listing();
+        listing.setTitle(dto.getTitle());
+        // Add URL warning to description if it exists
+        String webUrlInfo = dto.getUrl() != null ? "\n\nSource Web : " + dto.getUrl() : "";
+        listing.setDescription(dto.getDescription() != null ? dto.getDescription() + webUrlInfo : "Annonce issue de " + dto.getSource() + webUrlInfo);
+        listing.setPrice(dto.getPrice() != null ? dto.getPrice() : 0.0);
+        listing.setCategory(dto.getCategory() != null ? dto.getCategory() : "AUTRES");
+        listing.setAddress(dto.getCity() != null ? dto.getCity() + (dto.getCountry() != null ? ", " + dto.getCountry() : "") : null);
+        
+        // Map Explicit Geolocation bounds
+        listing.setLatitude(dto.getLatitude());
+        listing.setLongitude(dto.getLongitude());
+        
+        // System user UUID for 'Crawler Bot' to respect the not-null constraint
+        listing.setSellerId(java.util.UUID.nameUUIDFromBytes("crawler_bot".getBytes()));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(listingService.createListing(listing));
+    }
+
     @GetMapping
     @Operation(summary = "Get all listings", description = "Retrieve a list of all available listings")
     public ResponseEntity<List<Listing>> getAllListings() {

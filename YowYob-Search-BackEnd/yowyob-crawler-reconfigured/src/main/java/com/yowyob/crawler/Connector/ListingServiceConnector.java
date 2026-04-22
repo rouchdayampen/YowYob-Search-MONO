@@ -42,10 +42,9 @@ public class ListingServiceConnector implements ServiceConnector {
     }
 
     private String getSearchEndpoint() {
-        // Current default: http://localhost:8083/api/listings
-        // Target: http://localhost:8083/api/listing/search/documents
+        // Real endpoint: /api/listings/search/documents (note: with 's')
         if (baseUrl.endsWith("/api/listings")) {
-            return baseUrl.replace("/api/listings", "/api/listing/search/documents");
+            return baseUrl + "/search/documents";
         }
         return baseUrl + "/search/documents";
     }

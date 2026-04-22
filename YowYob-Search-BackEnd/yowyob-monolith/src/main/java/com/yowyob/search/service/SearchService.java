@@ -158,7 +158,7 @@ public class SearchService {
 
                                     return b;
                                 }))
-                                .withKnnQuery(co.elastic.clients.elasticsearch._types.KnnQuery.of(knn -> {
+                                .withKnnSearches(co.elastic.clients.elasticsearch._types.KnnSearch.of(knn -> {
                                     if (finalVectorArray != null) {
                                         List<Float> vectorListForKnn = new java.util.ArrayList<>();
                                         for (float f : finalVectorArray) {

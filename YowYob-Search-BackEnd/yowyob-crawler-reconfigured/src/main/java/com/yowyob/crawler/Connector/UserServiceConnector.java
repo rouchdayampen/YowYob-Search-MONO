@@ -43,17 +43,9 @@ public class UserServiceConnector implements ServiceConnector {
     }
 
     private String getSearchEndpoint() {
-        // Assuming baseUrl is http://host:port/api/users, we want
-        // /api/user/search/documents
-        // Adjust logic based on actual baseUrl config.
-        // If baseUrl is just root, we append path. If it's full path, we replace.
-        // Current config defaults: http://localhost:8084/api/users
-        // Target: http://localhost:8084/api/user/search/documents
-
-        // Simple logic: replace /users with /user/search/documents if present, else
-        // append
+        // Real endpoint: /api/users/search/documents (note: with 's')
         if (baseUrl.endsWith("/api/users")) {
-            return baseUrl.replace("/api/users", "/api/user/search/documents");
+            return baseUrl + "/search/documents";
         }
         return baseUrl + "/search/documents";
     }

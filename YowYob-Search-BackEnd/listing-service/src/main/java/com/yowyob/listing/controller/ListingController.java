@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import com.yowyob.listing.dto.CrawlerListingRequest;
+import com.yowyob.listing.entity.ListingStatus;
 
 @RestController
 @RequestMapping("/api/listings")
@@ -69,5 +71,24 @@ public class ListingController {
     @GetMapping("/health")
     public String health() {
         return "Listing Service is running!";
+    }
+
+    @PostMapping("/crawler/ingest")
+    @Operation(summary = "Ingest crawler listing", description = "Internal endpoint for Crawler Service to inject listings")
+    public ResponseEntity<Listing> ingestCrawlerListing(@RequestBody CrawlerListingRequest request) {
+        Listing listing = Listing.builder()
+                .title(request.getTitle())
+                .description(request.getDescription() != null ? request.getDescription() : "Source: " + request.getSource())
+                .price(request.getPrice() != null ? request.getPrice() : 0.0)
+                .category(request.getCategory() != null ? request.getCategory() : "GENERAL")
+                .address(request.getCity() != null ? request.getCity() + ", " + request.getCountry() : request.getCountry())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .status(ListingStatus.ACTIVE)
+                // Use a generic system UUID for crawler bot
+                .sellerId(UUID.fromString("00000000-0000-0000-0000-000000000001"))
+                .build();
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(listingService.createListing(listing));
     }
 }

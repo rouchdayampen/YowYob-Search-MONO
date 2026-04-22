@@ -32,7 +32,7 @@ public class GeoService {
 
     private final WebClient webClient;
     private final ReactiveRedisTemplate<String, GeocodeResponse> redisTemplate;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     @Value("${app.nominatim.url}")
     private String nominatimUrl;
@@ -43,9 +43,11 @@ public class GeoService {
     private static final String OSRM_BASE_URL = "http://router.project-osrm.org/route/v1";
 
     public GeoService(WebClient webClient,
-            @Qualifier("reactiveRedisTemplateForGeocode") ReactiveRedisTemplate<String, GeocodeResponse> redisTemplate) {
+            @Qualifier("reactiveRedisTemplateForGeocode") ReactiveRedisTemplate<String, GeocodeResponse> redisTemplate,
+            ObjectMapper objectMapper) {
         this.webClient = webClient;
         this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
     }
 
     /**

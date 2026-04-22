@@ -4,6 +4,8 @@ import { API_ENDPOINTS } from '../constants/api-endpoints';
 export interface GeoLocation {
     lat: number;
     lng: number;
+    city?: string;
+    country?: string;
 }
 
 export interface RouteInfo {
@@ -18,12 +20,31 @@ class GeoService {
      */
     async getIpLocation(): Promise<GeoLocation | null> {
         try {
-            // Call backend without IP parameter to let it infer from headers
-            const response = await httpClient.get<any>(`${API_ENDPOINTS.GEO_DISTANCE.replace('/distance', '/ip-location')}`);
+            // Get public IP to avoid localhost (127.0.0.1) resolution issues locally
+            let userIp = '';
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                if (ipResponse.ok) {
+                    const ipData = await ipResponse.json();
+                    userIp = ipData.ip;
+                }
+            } catch (e) {
+                console.warn('Could not fetch public IP, relying on backend headers inferred IP');
+            }
+
+            // Call backend with the public IP if available
+            const endpoint = userIp 
+                ? `${API_ENDPOINTS.GEO_DISTANCE.replace('/distance', '/ip-location')}?ip=${encodeURIComponent(userIp)}`
+                : `${API_ENDPOINTS.GEO_DISTANCE.replace('/distance', '/ip-location')}`;
+                
+            const response = await httpClient.get<any>(endpoint);
+            
             if (response && response.latitude && response.longitude) {
                 return {
                     lat: response.latitude,
-                    lng: response.longitude
+                    lng: response.longitude,
+                    city: response.city,
+                    country: response.country
                 };
             }
             return null;

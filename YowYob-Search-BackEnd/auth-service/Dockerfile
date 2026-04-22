@@ -1,5 +1,5 @@
 # Runtime stage (Local build workaround)
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 # Copy locally built JAR
 COPY target/*.jar app.jar

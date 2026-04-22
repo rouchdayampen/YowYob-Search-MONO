@@ -7,8 +7,14 @@ export interface SearchResult {
   category: string;
   city: string;
   quartier?: string;
-  rating: number;
+  rating?: number | null;
+  reviewsCount?: number | null;
   detailsUrl?: string;
+  // Nouveaux champs — tous optionnels
+  phone?: string | null;
+  openingHours?: string | null;
+  imageUrl?: string | null;
+  
   // UI specific fields that might be missing from backend
   images: string[];
   shop: {

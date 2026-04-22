@@ -1,80 +1,109 @@
+import React from "react";
 import { Badge } from '@/components/ui/badge';
 import { SearchResult } from '@/types/search';
+import { Star, Phone, Clock } from "lucide-react";
 
-interface ResultListItemProps {
-    item: SearchResult;
-    onClick?: (item: SearchResult) => void;
+interface Props {
+  item: SearchResult;
+  onClick?: (item: SearchResult) => void;
 }
 
-export const ResultListItem: React.FC<ResultListItemProps> = ({ item, onClick }) => {
+// Composant étoiles — ne s'affiche que si rating est réel
+function StarRating({ rating, count }: { rating: number; count: number }) {
+  return (
+    <span className="flex items-center gap-1 text-sm">
+      <span className="font-semibold text-gray-800 dark:text-gray-200">{rating.toFixed(1)}</span>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star
+          key={i}
+          size={14}
+          className={i < Math.round(rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300 dark:text-gray-600"}
+        />
+      ))}
+      <span className="text-gray-500 dark:text-gray-400">({count})</span>
+    </span>
+  );
+}
 
-    // Generate a display URL or breadcrumb
-    const displayUrl = item.detailsUrl && item.detailsUrl.startsWith('http')
-        ? item.detailsUrl.replace('https://', '').replace('http://', '').split('/')[0]
-        : `yowyob.com › ${item.category || item.type} › ${item.id.substring(0, 8)}`;
+export const ResultListItem: React.FC<Props> = ({ item: result, onClick }) => {
+  const displayImage = result.imageUrl || (result.images && result.images.length > 0 ? result.images[0] : null);
 
-    return (
-        <div
-            className="group flex flex-col md:flex-row gap-4 mb-8 max-w-2xl cursor-pointer"
-            onClick={() => onClick?.(item)}
-        >
-            <div className="flex-1 min-w-0">
-                {/* 1. Header: Icon + Site/Breadcrumb */}
-                <div className="flex items-center gap-3 mb-1.5 text-sm">
-                    <div className="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-300">
-                        {item.type.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="font-medium text-gray-900 dark:text-gray-200 text-sm leading-tight">YowYob Search</span>
-                        <span className="text-gray-500 dark:text-gray-400 text-xs truncate leading-tight">{displayUrl}</span>
-                    </div>
-                </div>
+  return (
+    <div 
+        className="flex gap-4 p-4 border-b border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer max-w-2xl"
+        onClick={() => onClick?.(result)}
+    >
 
-                {/* 2. Title: Blue, Large, Hover Underline */}
-                <h3 className="text-xl text-[#1a0dab] dark:text-[#8ab4f8] font-normal group-hover:underline mb-1 leading-snug">
-                    {item.name}
-                </h3>
+      {/* Contenu principal */}
+      <div className="flex-1 min-w-0">
 
-                {/* 3. Rich Snippets Row (Rating, Price, etc.) */}
-                <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mb-1">
-                    {item.rating > 0 && (
-                        <div className="flex items-center gap-1">
-                            <span className="text-yellow-500 text-xs">★★★★★</span>
-                            <span className="font-medium text-gray-700 dark:text-gray-300">{item.rating.toFixed(1)}</span>
-                        </div>
-                    )}
-                    {item.price && (
-                        <span className="font-semibold text-gray-900 dark:text-gray-200">
-                            {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XAF', minimumFractionDigits: 0 }).format(item.price)}
-                        </span>
-                    )}
-                    {item.type && (
-                        <span className="text-gray-400">• {item.type}</span>
-                    )}
-                    {(item.city || item.quartier || item.shop.address) && (
-                        <span className="text-gray-400 truncate">• {[item.quartier, item.city].filter(Boolean).join(', ') || item.shop.address}</span>
-                    )}
-                </div>
+        {/* Titre */}
+        <h3 className="text-xl font-normal text-[#1a0dab] dark:text-[#8ab4f8] group-hover:underline cursor-pointer truncate leading-snug mb-1">
+          {result.title || result.name}
+        </h3>
 
-                {/* 4. Description */}
-                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-2">
-                    {item.description}
-                </p>
-            </div>
-
-            {/* 5. Thumbnail (if available) - Right aligned like Google Product results */}
-            {item.images && item.images.length > 0 && (
-                <div className="flex-shrink-0 mt-2 md:mt-0">
-                    <div className="w-24 h-24 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src={item.images[0]}
-                            alt={item.name}
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
-                </div>
+        {/* Rating — masqué si null, jamais de valeur inventée */}
+        <div className="flex items-center gap-2 mb-1 text-sm text-gray-500">
+            {result.rating != null && result.reviewsCount != null ? (
+            <StarRating rating={result.rating} count={result.reviewsCount} />
+            ) : (
+            <span className="text-xs text-gray-400">Pas encore d'avis</span>
+            )}
+            {result.category && (
+                <span>• {result.category}</span>
             )}
         </div>
-    );
-};
+
+        {/* Ville + Téléphone */}
+        <div className="flex items-center gap-2 mb-1 text-sm text-gray-500 dark:text-gray-400">
+          {(result.city || result.quartier || (result.shop && result.shop.address)) && (
+            <span className="truncate">
+                {[result.quartier, result.city].filter(Boolean).join(', ') || result.shop.address}
+            </span>
+          )}
+          {result.phone ? (
+            <span className="flex items-center gap-1">
+              • {result.phone}
+            </span>
+          ) : (
+            <span className="text-gray-400 text-xs">• Tél. non renseigné</span>
+          )}
+        </div>
+
+        {/* Horaires */}
+        <div className="flex items-center gap-1 mb-2 text-sm text-gray-500 dark:text-gray-400">
+          {result.openingHours ? (
+            <span>{result.openingHours}</span>
+          ) : (
+            <span className="text-gray-400 text-xs">Horaires non renseignés</span>
+          )}
+        </div>
+        
+        {/* Description snippet */}
+        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-2 mt-1 flex gap-2">
+            {result.description && (
+                <span>
+                   <span className="text-[#1a0dab] dark:text-[#8ab4f8] mr-1">👤</span> 
+                   "{result.description}"
+                </span>
+            )}
+        </p>
+
+      </div>
+
+      {/* Image — masquée si absente */}
+      {displayImage && (
+        <div className="flex-shrink-0 w-24 h-24 mt-1 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 dark:border-gray-700">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={displayImage}
+            alt={result.title || result.name}
+            className="w-full h-full object-cover"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+          />
+        </div>
+      )}
+
+    </div>
+  );
+}

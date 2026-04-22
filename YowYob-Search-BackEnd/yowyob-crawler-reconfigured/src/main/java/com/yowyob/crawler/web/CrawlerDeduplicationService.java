@@ -3,12 +3,15 @@ package com.yowyob.crawler.web;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -19,12 +22,15 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class CrawlerDeduplicationService {
 
-    // Ensure you have a RedisTemplate configured in your crawler app
-    // Alternatively, you can use StringRedisTemplate
-    private final RedisTemplate<String, String> redisTemplate;
+    @Autowired(required = false)
+    private RedisTemplate<String, String> redisTemplate;
+    
+    @Value("${crawler.deduplication.redis-enabled:true}")
+    private boolean redisEnabled;
+
+    private final AtomicInteger redisFailureCount = new AtomicInteger(0);
     
     private final LevenshteinDistance levenshtein = new LevenshteinDistance();
     private static final double SIMILARITY_THRESHOLD = 0.85;
@@ -44,15 +50,12 @@ public class CrawlerDeduplicationService {
             String urlKey = "crawler:seen:url:" + listing.getUrl();
             
             // Tier 1: Exact Match (Redis Check)
-            Boolean isSeen = redisTemplate.hasKey(urlKey);
-            if (Boolean.TRUE.equals(isSeen)) {
+            if (isSeenInRedis(urlKey)) {
                 log.debug("Listing already seen recently in Redis (URL: {}). Skipping.", listing.getUrl());
                 continue;
             }
 
             // Tier 2: Similarity Match (Levenshtein) against current batch
-            // Note: For a real production system, you might also compare against actual listings 
-            // from the ListingService database or Elasticsearch directly here.
             boolean isTooSimilar = false;
             for (String acceptedTitle : currentBatchTitles) {
                 if (calculateSimilarity(listing.getTitle(), acceptedTitle) >= SIMILARITY_THRESHOLD) {
@@ -68,7 +71,7 @@ public class CrawlerDeduplicationService {
                 currentBatchTitles.add(listing.getTitle());
                 
                 // Mark it as seen in Redis for 48 hours to avoid re-scraping it tomorrow
-                redisTemplate.opsForValue().set(urlKey, "1", 48, TimeUnit.HOURS);
+                markAsSeenInRedis(urlKey);
             }
         }
 
@@ -91,5 +94,32 @@ public class CrawlerDeduplicationService {
         if (maxLength == 0) return 1.0;
         
         return 1.0 - ((double) distance / maxLength);
+    }
+
+    private boolean isSeenInRedis(String key) {
+        if (redisTemplate == null || !redisEnabled) return false;
+        try {
+            return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+        } catch (Exception e) {
+            handleRedisFailure("read", key, e);
+            return false;
+        }
+    }
+
+    private void markAsSeenInRedis(String key) {
+        if (redisTemplate == null || !redisEnabled) return;
+        try {
+            redisTemplate.opsForValue().set(key, "1", 48, TimeUnit.HOURS);
+        } catch (Exception e) {
+            handleRedisFailure("write", key, e);
+        }
+    }
+
+    private void handleRedisFailure(String operation, String key, Exception e) {
+        int failures = redisFailureCount.incrementAndGet();
+        if (failures % 100 == 1) { // log seulement toutes les 100 erreurs
+            log.warn("Redis unavailable ({}) — {} cumulative failures. Deduplication degraded. Last error key={}: {}", 
+                    operation, failures, key, e.getMessage());
+        }
     }
 }

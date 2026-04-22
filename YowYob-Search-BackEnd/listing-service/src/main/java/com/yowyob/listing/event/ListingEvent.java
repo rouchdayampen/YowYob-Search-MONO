@@ -25,4 +25,10 @@ public class ListingEvent implements Serializable {
     private String status;
     private UUID sellerId;
     private String eventType; // CREATED, UPDATED, DELETED
+    
+    private String imageUrl;
+    private String phone;
+    private String openingHours;
+    private Double rating;
+    private Integer reviewsCount;
 }

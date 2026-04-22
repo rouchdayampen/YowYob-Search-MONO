@@ -64,6 +64,13 @@ public class ListingService {
         listing.setAddress(listingDetails.getAddress());
         listing.setLatitude(listingDetails.getLatitude());
         listing.setLongitude(listingDetails.getLongitude());
+        
+        listing.setImageUrl(listingDetails.getImageUrl());
+        listing.setPhone(listingDetails.getPhone());
+        listing.setOpeningHours(listingDetails.getOpeningHours());
+        listing.setRating(listingDetails.getRating());
+        listing.setReviewsCount(listingDetails.getReviewsCount());
+        
         listing.setStatus(listingDetails.getStatus());
         listing.setUpdatedAt(LocalDateTime.now());
 
@@ -92,6 +99,11 @@ public class ListingService {
                 .address(listing.getAddress())
                 .latitude(listing.getLatitude())
                 .longitude(listing.getLongitude())
+                .imageUrl(listing.getImageUrl())
+                .phone(listing.getPhone())
+                .openingHours(listing.getOpeningHours())
+                .rating(listing.getRating())
+                .reviewsCount(listing.getReviewsCount())
                 .status(listing.getStatus().name())
                 .sellerId(listing.getSellerId())
                 .eventType(eventType)

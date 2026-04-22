@@ -30,5 +30,11 @@ public class ScrapedListing {
     private Double latitude;
     private Double longitude;
     
+    // Rich Local Business Data
+    private String phone;           // tag OSM : phone ou contact:phone
+    private String openingHours;    // tag OSM : opening_hours
+    private Double rating;          // null par défaut — jamais généré aléatoirement
+    private Integer reviewsCount;   // null par défaut — jamais généré aléatoirement
+    
     private LocalDateTime scrapedAt;
 }

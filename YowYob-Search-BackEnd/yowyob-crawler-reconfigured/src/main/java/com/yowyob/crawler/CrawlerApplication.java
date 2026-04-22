@@ -9,11 +9,9 @@ import org.springframework.context.annotation.Bean;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import org.springframework.web.client.RestClient;
-import org.springframework.web.client.support.RestClientAdapter;
-import org.springframework.web.service.invoker.HttpServiceProxyFactory;
-import com.yowyob.crawler.web.ListingServiceClient;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 
 @SpringBootApplication
@@ -30,13 +28,6 @@ public class CrawlerApplication {
     }
 
 
-    @Bean
-    public ListingServiceClient listingServiceClient(@Value("${service.listing.api.url:http://localhost:8080/api/listings}") String baseUrl) {
-        RestClient restClient = RestClient.builder().baseUrl(baseUrl).build();
-        RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        return factory.createClient(ListingServiceClient.class);
-    }
 
     @Bean
     public ObjectMapper objectMapper() {

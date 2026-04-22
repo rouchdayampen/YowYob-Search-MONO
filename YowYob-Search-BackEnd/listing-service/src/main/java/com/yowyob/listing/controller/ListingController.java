@@ -5,6 +5,7 @@ import com.yowyob.listing.service.ListingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import com.yowyob.listing.entity.ListingStatus;
 @RestController
 @RequestMapping("/api/listings")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Listings", description = "Endpoints for managing listings (products/services)")
 public class ListingController {
 
@@ -73,9 +75,11 @@ public class ListingController {
         return "Listing Service is running!";
     }
 
+    @Deprecated(since = "2.0", forRemoval = true)
     @PostMapping("/crawler/ingest")
-    @Operation(summary = "Ingest crawler listing", description = "Internal endpoint for Crawler Service to inject listings")
+    @Operation(summary = "Ingest crawler listing", description = "DEPRECATED Internal endpoint - use Kafka event instead")
     public ResponseEntity<Listing> ingestCrawlerListing(@RequestBody CrawlerListingRequest request) {
+        log.warn("DEPRECATED endpoint /crawler/ingest called — migrate to Kafka topic crawler.listings.events");
         Listing listing = Listing.builder()
                 .title(request.getTitle())
                 .description(request.getDescription() != null ? request.getDescription() : "Source: " + request.getSource())

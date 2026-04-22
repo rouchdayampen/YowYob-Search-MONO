@@ -18,6 +18,17 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: listing-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.yowyob.crawler.model"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.yowyob.listing.dto.CrawlerListingRequest
 
 springdoc:
   api-docs:

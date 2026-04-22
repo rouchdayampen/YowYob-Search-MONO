@@ -66,6 +66,18 @@ public class ProductDocument {
     @Field(name = "images", type = FieldType.Keyword)
     private List<String> images;
 
+    @Field(name = "imageUrl", type = FieldType.Keyword)
+    private String imageUrl;
+
+    @Field(name = "phone", type = FieldType.Keyword)
+    private String phone;
+
+    @Field(name = "openingHours", type = FieldType.Text)
+    private String openingHours;
+
+    @Field(name = "reviewsCount", type = FieldType.Integer)
+    private Integer reviewsCount;
+
     /**
      * Helper to populate location from latitude and longitude if needed.
      * Note: Ingest Pipeline in ES should handle this automatically.

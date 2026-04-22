@@ -1,6 +1,7 @@
 package com.yowyob.search.event;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListingEvent implements Serializable {
@@ -22,4 +24,11 @@ public class ListingEvent implements Serializable {
     private String status;
     private UUID sellerId;
     private String eventType;
+    
+    // Nouveaux champs
+    private String imageUrl;
+    private String phone;
+    private String openingHours;
+    private Double rating;
+    private Integer reviewsCount;
 }

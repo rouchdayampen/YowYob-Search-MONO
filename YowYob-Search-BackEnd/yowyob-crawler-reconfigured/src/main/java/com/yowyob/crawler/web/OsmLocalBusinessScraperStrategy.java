@@ -94,6 +94,13 @@ public class OsmLocalBusinessScraperStrategy implements WebScraperStrategy {
 
                         String website = tags.path("website").asText(null);
 
+                        String phone = firstNonNull(
+                            tags.path("phone").asText(null),
+                            tags.path("contact:phone").asText(null),
+                            tags.path("contact:mobile").asText(null)
+                        );
+                        String openingHours = tags.path("opening_hours").asText(null);
+
                         listings.add(ScrapedListing.builder()
                                 .source(getSourceName())
                                 .title(name + " (" + amenity + ")")
@@ -104,6 +111,10 @@ public class OsmLocalBusinessScraperStrategy implements WebScraperStrategy {
                                 .latitude(lat)
                                 .longitude(lon)
                                 .url(website != null ? website : "https://www.openstreetmap.org/node/" + element.path("id").asLong())
+                                .phone(phone)
+                                .openingHours(openingHours)
+                                .rating(null) // never simulated
+                                .reviewsCount(null) // never simulated
                                 .scrapedAt(LocalDateTime.now())
                                 .build());
 
@@ -181,5 +192,13 @@ public class OsmLocalBusinessScraperStrategy implements WebScraperStrategy {
             case "bakery"   -> "BOULANGERIE";
             default -> "SERVICES_LOCAUX";
         };
+    }
+
+    // Utilitaire : retourne le premier non-null
+    private String firstNonNull(String... values) {
+        for (String v : values) {
+            if (v != null && !v.isBlank()) return v;
+        }
+        return null;
     }
 }

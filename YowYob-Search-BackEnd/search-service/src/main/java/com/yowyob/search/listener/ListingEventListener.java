@@ -31,7 +31,12 @@ public class ListingEventListener {
             doc.setCategory(event.getCategory());
             doc.setCity(event.getAddress()); // Using address as city for now
             doc.setServiceType("LISTING");
-            doc.setRating(0.0);
+            
+            doc.setImageUrl(event.getImageUrl());
+            doc.setRating(event.getRating());
+            doc.setReviewsCount(event.getReviewsCount());
+            doc.setPhone(event.getPhone());
+            doc.setOpeningHours(event.getOpeningHours());
 
             searchService.indexProduct(doc).subscribe(
                     result -> log.info("Successfully indexed listing: {}", result.getId()),

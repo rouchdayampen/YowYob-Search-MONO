@@ -21,7 +21,7 @@ public class WebCrawlerModule {
     // Spring will automatically inject all beans implementing WebScraperStrategy!
     private final List<WebScraperStrategy> scrapers;
     private final CrawlerDeduplicationService deduplicationService;
-    private final ListingServiceWebClient listingServiceWebClient;
+    private final ListingServiceKafkaClient listingServiceKafkaClient;
 
     /**
      * Executes the web scraping jobs automatically.
@@ -57,6 +57,8 @@ public class WebCrawlerModule {
 
         // --- Phase 3 & 4: Deduplicate & Inject ---
         List<ScrapedListing> uniqueListings = deduplicationService.filterDuplicates(allListings);
-        listingServiceWebClient.injectListings(uniqueListings);
+        for (ScrapedListing listing : uniqueListings) {
+            listingServiceKafkaClient.sendListing(listing);
+        }
     }
 }

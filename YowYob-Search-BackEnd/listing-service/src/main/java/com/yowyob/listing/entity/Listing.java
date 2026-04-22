@@ -42,6 +42,22 @@ public class Listing {
     private Double latitude;
     private Double longitude;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    // Nouveaux champs
+    @Column(name = "phone",         length = 30)
+    private String phone;
+
+    @Column(name = "opening_hours", length = 512)
+    private String openingHours;
+
+    @Column(name = "rating",        precision = 3, scale = 1)
+    private Double rating;
+
+    @Column(name = "reviews_count")
+    private Integer reviewsCount;
+
     @Enumerated(EnumType.STRING)
     private ListingStatus status;
 

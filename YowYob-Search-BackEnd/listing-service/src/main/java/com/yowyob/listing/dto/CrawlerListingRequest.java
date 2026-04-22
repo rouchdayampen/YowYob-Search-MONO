@@ -24,5 +24,12 @@ public class CrawlerListingRequest {
     private String imageUrl;
     private Double latitude;
     private Double longitude;
+    
+    // Nouveaux champs — nullable
+    private String  phone;
+    private String  openingHours;
+    private Double  rating;
+    private Integer reviewsCount;
+    
     private LocalDateTime scrapedAt;
 }

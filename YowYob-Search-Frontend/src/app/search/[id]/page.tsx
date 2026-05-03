@@ -62,30 +62,43 @@ export default function ProductDetailsPage() {
         // Reset details when recalculating
         setRouteDetails(null);
         try {
-            // 1. Get user location (try browser first, then IP)
+            // 1. Get user location (FORCE IP BASED on requirement)
             // If we already have user location, use it
             let location = userLocation ? { lat: userLocation[0], lng: userLocation[1] } : null;
 
             if (!location) {
-                try {
-                    location = await geoService.getCurrentPosition();
-                } catch (e) {
-                    console.warn("Browser geo failed, trying IP...", e);
-                    location = await geoService.getIpLocation();
-                }
+                location = await geoService.getIpLocation();
             }
 
             if (!location) {
-                toast.error("Impossible de déterminer votre position");
+                toast.error("Impossible de déterminer votre position via IP");
                 return;
             }
 
             setUserLocation([location.lat, location.lng]);
 
-            // 2. Get route
+            // 2. Get product exact location from its street address
+            let productLat = product.location?.lat;
+            let productLng = product.location?.lng;
+
+            if (product.shop?.address) {
+                // Try to get exact street coordinates
+                const geocoded = await geoService.geocode(product.shop.address);
+                if (geocoded) {
+                    productLat = geocoded.lat;
+                    productLng = geocoded.lng;
+                }
+            }
+
+            if (!productLat || !productLng) {
+                toast.error("Impossible de déterminer la position du produit.");
+                return;
+            }
+
+            // 3. Get route
             const routeInfo = await geoService.getRoute(
                 { lat: location.lat, lng: location.lng },
-                { lat: product.location.lat, lng: product.location.lng },
+                { lat: productLat, lng: productLng },
                 transportMode
             );
 

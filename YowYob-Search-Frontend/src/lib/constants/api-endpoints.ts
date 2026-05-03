@@ -44,6 +44,7 @@ export const API_ENDPOINTS = {
   // Geo
   GEO_DISTANCE: `/api/geo/distance`,
   GEO_ROUTE: `/api/geo/route`,
+  GEO_GEOCODE: `/api/geo/geocode`,
 } as const;
 
 export const WS_ENDPOINTS = {

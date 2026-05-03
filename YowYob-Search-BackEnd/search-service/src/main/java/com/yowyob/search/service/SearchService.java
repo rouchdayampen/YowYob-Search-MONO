@@ -173,7 +173,7 @@ public class SearchService {
                 // Comparaison directe case-insensitive
                 boolean directMatch = doc.getCity().equalsIgnoreCase(finalCityForFilter);
                 // Comparaison après normalisation des accents
-                boolean normalizedMatch = normalizedDocCity.equals(normalizedFilterCity);
+                boolean normalizedMatch = normalizedDocCity.contains(normalizedFilterCity);
                 return directMatch || normalizedMatch;
             });
         }

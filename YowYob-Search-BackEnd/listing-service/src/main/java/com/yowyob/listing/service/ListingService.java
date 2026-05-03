@@ -27,6 +27,10 @@ public class ListingService {
         if (listing.getStatus() == null) {
             listing.setStatus(ListingStatus.ACTIVE);
         }
+        if (listing.getSellerId() == null) {
+            // Assign a default system seller ID if missing (e.g. from crawler)
+            listing.setSellerId(UUID.fromString("00000000-0000-0000-0000-000000000001"));
+        }
         Listing savedListing = listingRepository.save(listing);
 
         publishEvent(savedListing, "CREATED");

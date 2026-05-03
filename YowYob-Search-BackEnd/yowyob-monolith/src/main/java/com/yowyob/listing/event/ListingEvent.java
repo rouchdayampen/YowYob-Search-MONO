@@ -28,6 +28,7 @@ public class ListingEvent implements Serializable {
     private Double price;
     private String category;
     private String address;
+    private String street;
     private Double latitude;
     private Double longitude;
     private String status;

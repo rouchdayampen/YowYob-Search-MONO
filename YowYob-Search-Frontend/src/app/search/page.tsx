@@ -163,45 +163,43 @@ function SearchContent() {
 
           {/* Results Section */}
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <CardSkeleton key={i} />
+            <div className="flex flex-col gap-8 max-w-3xl">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-32 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg" />
               ))}
             </div>
           ) : results.length === 0 && query.trim() !== '' ? (
             <div className="text-center py-20">
               <h3 className="text-xl text-gray-600 dark:text-gray-400">Aucun résultat trouvé pour &quot;{query}&quot;</h3>
             </div>
-          ) : showMap ? (
-            // Layout with map: 2 columns + map sidebar
-            <div className="flex flex-col lg:flex-row gap-6">
-              <div className="flex-1 overflow-y-auto max-h-[calc(100vh-300px)] pr-2">
-                <div className="flex flex-col gap-2">
-                  {results.map((item) => (
-                    <ResultListItem key={item.id} item={item} onClick={handleResultClick} />
-                  ))}
-                </div>
-              </div>
-              <div className="w-full lg:w-[500px] xl:w-[600px] flex-shrink-0">
-                <div className="sticky top-24 h-[calc(100vh-200px)] rounded-3xl overflow-hidden shadow-2xl">
-                  <MapContainer
-                    markers={results.map(r => ({
-                      id: r.id,
-                      position: [r.location?.lat || 3.848, r.location?.lng || 11.5021],
-                      title: r.name,
-                      description: r.description
-                    }))}
-                    className="w-full h-full"
-                  />
-                </div>
-              </div>
-            </div>
           ) : (
-            // Layout without map: 4 columns
-            <div className="flex flex-col gap-2 max-w-4xl">
-              {results.map((item) => (
-                <ResultListItem key={item.id} item={item} onClick={handleResultClick} />
-              ))}
+            <div className="max-w-3xl">
+              {/* Map Header — Style Google Local */}
+              {(results.some(r => r.location?.lat || r.latitude)) && (
+                <div className="mb-8 rounded-2xl overflow-hidden border border-[#dadce0] dark:border-gray-800 shadow-sm">
+                   <div className="bg-[#f8f9fa] dark:bg-gray-800/50 px-4 py-3 border-b border-[#dadce0] dark:border-gray-700">
+                      <h2 className="text-[20px] font-normal text-[#202124] dark:text-white">Adresses</h2>
+                   </div>
+                   <div className="h-[280px] w-full">
+                      <MapContainer
+                        markers={results.filter(r => r.location?.lat || r.latitude).map(r => ({
+                          id: r.id,
+                          position: [r.location?.lat || r.latitude || 4.05, r.location?.lng || r.longitude || 9.7],
+                          title: r.title || r.name,
+                          description: r.description
+                        }))}
+                        className="w-full h-full"
+                      />
+                   </div>
+                </div>
+              )}
+
+              {/* List of Results */}
+              <div className="flex flex-col">
+                {results.map((item) => (
+                  <ResultListItem key={item.id} item={item} onClick={handleResultClick} />
+                ))}
+              </div>
             </div>
           )}
         </div>

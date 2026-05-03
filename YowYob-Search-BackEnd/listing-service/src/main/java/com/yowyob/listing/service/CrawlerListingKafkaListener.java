@@ -46,6 +46,7 @@ public class CrawlerListingKafkaListener {
                     .rating(request.getRating())
                     .reviewsCount(request.getReviewsCount())
                     .status(ListingStatus.ACTIVE)
+                    .externalId(request.getExternalId())
                     // Use a generic system UUID for crawler bot
                     .sellerId(UUID.fromString("00000000-0000-0000-0000-000000000001"))
                     .build();

@@ -22,6 +22,7 @@ public class CrawlerListingRequest {
     private String category;
     private String url;
     private String imageUrl;
+    private String address;
     private Double latitude;
     private Double longitude;
     

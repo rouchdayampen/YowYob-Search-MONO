@@ -26,12 +26,12 @@ public class IpGeolocationService {
     @Qualifier("reactiveRedisTemplateForGeoLocation")
     private final ReactiveRedisTemplate<String, GeoLocationDto> redisTemplate;
 
-    @Value("${app.ipapi.url:https://ipapi.co}")
+    @Value("${app.ipapi.url:http://ip-api.com}")
     private String ipapiUrl;
 
     /**
      * Get geolocation from IP address
-     * Uses ipapi.co which provides free geolocation service
+     * Uses ip-api.com which provides free geolocation service
      * 
      * @param ipAddress The IP address to geolocate
      * @return Mono containing GeoLocationDto with coordinates
@@ -65,7 +65,7 @@ public class IpGeolocationService {
     }
 
     /**
-     * Fetch geolocation from ipapi.co API
+     * Fetch geolocation from ip-api.com API
      * Free service, no authentication required
      * 
      * @param ipAddress The IP address
@@ -75,15 +75,15 @@ public class IpGeolocationService {
         log.info("Fetching geolocation for IP: {}", ipAddress);
 
         return webClient.get()
-                .uri(ipapiUrl + "/{ip}/json/", ipAddress)
+                .uri(ipapiUrl + "/json/{ip}", ipAddress)
                 .header("User-Agent", "YowYob-Search-Service")
                 .retrieve()
                 .bodyToMono(Map.class)
                 .map(response -> {
                     String city = (String) response.get("city");
-                    String country = (String) response.get("country_name");
-                    Object latObj = response.get("latitude");
-                    Object lonObj = response.get("longitude");
+                    String country = (String) response.get("country");
+                    Object latObj = response.get("lat");
+                    Object lonObj = response.get("lon");
 
                     Double latitude = latObj != null ? Double.parseDouble(latObj.toString()) : null;
                     Double longitude = lonObj != null ? Double.parseDouble(lonObj.toString()) : null;
@@ -103,7 +103,7 @@ public class IpGeolocationService {
                 .doOnSuccess(result -> log.info("Successfully geolocated IP {}: {}, {}", ipAddress, result.getCity(),
                         result.getCountry()))
                 .onErrorResume(error -> {
-                    log.error("Error calling ipapi.co for IP {}: {}", ipAddress, error.getMessage());
+                    log.error("Error calling ip-api.com for IP {}: {}", ipAddress, error.getMessage());
                     // Fallback to default location
                     return Mono.just(GeoLocationDto.builder()
                             .city("Douala")

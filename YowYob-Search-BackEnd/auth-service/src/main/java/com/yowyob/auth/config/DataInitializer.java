@@ -1,7 +1,7 @@
 package com.yowyob.auth.config;
 
-import com.yowyob.auth.entity.User;
-import com.yowyob.auth.repository.UserRepository;
+import com.yowyob.auth.domain.model.AuthUser;
+import com.yowyob.auth.domain.port.out.AuthUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class DataInitializer {
 
     @Bean
-    public CommandLineRunner initializeCrawlerUser(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public CommandLineRunner initializeCrawlerUser(AuthUserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             String crawlerEmail = "crawler@yowyob.system";
             
@@ -28,12 +28,12 @@ public class DataInitializer {
             }
 
             // Create crawler system user
-            User crawlerUser = User.builder()
+            AuthUser crawlerUser = AuthUser.builder()
                     .name("Yowyob Crawler System")
                     .email(crawlerEmail)
                     .password(passwordEncoder.encode("crawler_secure_password_123"))
-                    .role(User.Role.USER)
-                    .status(User.Status.ACTIVE)
+                    .role(AuthUser.Role.USER)
+                    .status(AuthUser.Status.ACTIVE)
                     .emailVerified(true)
                     .build();
 

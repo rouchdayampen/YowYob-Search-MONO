@@ -1,8 +1,8 @@
 package com.yowyob.crawler.kafka;
 
 import com.yowyob.crawler.dto.ListingEvent;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -11,15 +11,19 @@ import java.util.List;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class ListingKafkaProducer {
 
-    @Value("${kafka.topics.listings}")
+    @Value("${kafka.topics.listings:listings.raw}")
     private String topic;
 
-    private final KafkaTemplate<String, ListingEvent> kafkaTemplate;
+    @Autowired(required = false)
+    private KafkaTemplate<String, ListingEvent> kafkaTemplate;
 
     public void publish(ListingEvent event) {
+        if (kafkaTemplate == null) {
+            log.warn("[MODE LIGHT] Kafka non disponible — listing non publié : {}", event.getName());
+            return;
+        }
         kafkaTemplate.send(topic, event.getOsmId(), event)
             .whenComplete((result, ex) -> {
                 if (ex != null) {
@@ -33,6 +37,6 @@ public class ListingKafkaProducer {
 
     public void publishAll(List<ListingEvent> events) {
         events.forEach(this::publish);
-        log.info("{} événements envoyés vers '{}'", events.size(), topic);
+        log.info("{} événements traités vers '{}'", events.size(), topic);
     }
 }

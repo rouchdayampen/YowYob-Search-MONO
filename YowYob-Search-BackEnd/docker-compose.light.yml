@@ -15,7 +15,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data_17_v1:/var/lib/postgresql/data
     networks:
@@ -255,6 +255,33 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    networks:
+      - app-network
+
+  crawler-service:
+    build:
+      context: ./yowyob-crawler-reconfigured
+      dockerfile: Dockerfile
+    container_name: crawler-service
+    ports:
+      - "8086:8086"
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - JAVA_OPTS=-Xmx256m -Xms128m
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_AUTOCONFIGURE_EXCLUDE=org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+    depends_on:
+      - redis
+      - rabbitmq
     networks:
       - app-network
 

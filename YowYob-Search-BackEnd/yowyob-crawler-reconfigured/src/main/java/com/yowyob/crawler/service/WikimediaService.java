@@ -23,6 +23,9 @@ public class WikimediaService {
     private static final String WIKIMEDIA_URL =
         "https://commons.wikimedia.org/w/api.php";
 
+    // Délai entre requêtes pour respecter le rate limit Wikimedia (1 req/s)
+    private static final long RATE_LIMIT_DELAY_MS = 1000;
+
     /**
      * Stratégie hybride :
      * 1. Cherche par nom du commerce
@@ -30,14 +33,12 @@ public class WikimediaService {
      * 3. Si rien → retourne null (acceptable)
      */
     public String findPhoto(String name, double lat, double lng) {
-        // Étape 1 : recherche par nom
         String photoUrl = searchByName(name);
         if (photoUrl != null) {
             log.debug("Photo trouvée par nom pour : {}", name);
             return photoUrl;
         }
 
-        // Étape 2 : fallback par GPS
         photoUrl = searchByGps(lat, lng);
         if (photoUrl != null) {
             log.debug("Photo trouvée par GPS pour : {}", name);
@@ -50,31 +51,33 @@ public class WikimediaService {
 
     // ── Méthodes privées ──────────────────────────────────────────
 
-    /**
-     * Recherche une image par nom du commerce
-     * Endpoint : action=query&list=search&srnamespace=6
-     */
+    private void sleep() {
+        try { Thread.sleep(RATE_LIMIT_DELAY_MS); } catch (InterruptedException ignored) {}
+    }
+
+    private HttpHeaders wikimediaHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("User-Agent", "YowYob-Crawler/1.0 (contact@yowyob.com)");
+        return headers;
+    }
+
     private String searchByName(String name) {
         try {
+            sleep();
             String url = UriComponentsBuilder.fromHttpUrl(WIKIMEDIA_URL)
                 .queryParam("action", "query")
                 .queryParam("list", "search")
                 .queryParam("srsearch", name)
-                .queryParam("srnamespace", "6")   // namespace 6 = fichiers/images
+                .queryParam("srnamespace", "6")
                 .queryParam("srlimit", "1")
                 .queryParam("format", "json")
                 .toUriString();
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("User-Agent", "YowYob-Crawler/1.0");
-            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-
-            ResponseEntity<String> response =
-                restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(
+                url, HttpMethod.GET, new HttpEntity<>(wikimediaHeaders()), String.class);
 
             WikimediaResponse parsed = objectMapper.readValue(
-                response.getBody(), WikimediaResponse.class
-            );
+                response.getBody(), WikimediaResponse.class);
 
             if (parsed.getQuery() == null
                     || parsed.getQuery().getSearch() == null
@@ -86,38 +89,30 @@ public class WikimediaService {
             return fetchImageUrl(title);
 
         } catch (Exception e) {
-            log.warn("Erreur recherche Wikimedia par nom '{}' : {}", name, e.getMessage());
+            log.warn("Erreur Wikimedia nom '{}' : {}", name, e.getMessage());
             return null;
         }
     }
 
-    /**
-     * Recherche une image par coordonnées GPS
-     * Endpoint : action=query&generator=geosearch
-     */
     private String searchByGps(double lat, double lng) {
         try {
+            sleep();
             String url = UriComponentsBuilder.fromHttpUrl(WIKIMEDIA_URL)
                 .queryParam("action", "query")
                 .queryParam("generator", "geosearch")
                 .queryParam("ggscoord", lat + "|" + lng)
-                .queryParam("ggsradius", "100")    // rayon 100 mètres
+                .queryParam("ggsradius", "100")
                 .queryParam("ggslimit", "1")
                 .queryParam("prop", "imageinfo")
                 .queryParam("iiprop", "url")
                 .queryParam("format", "json")
                 .toUriString();
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("User-Agent", "YowYob-Crawler/1.0");
-            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-
-            ResponseEntity<String> response =
-                restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(
+                url, HttpMethod.GET, new HttpEntity<>(wikimediaHeaders()), String.class);
 
             WikimediaResponse parsed = objectMapper.readValue(
-                response.getBody(), WikimediaResponse.class
-            );
+                response.getBody(), WikimediaResponse.class);
 
             if (parsed.getQuery() == null
                     || parsed.getQuery().getPages() == null
@@ -125,7 +120,6 @@ public class WikimediaService {
                 return null;
             }
 
-            // Prend la première page trouvée et vérifie le type d'image
             return parsed.getQuery().getPages().values().stream()
                 .filter(p -> p.getImageinfo() != null && !p.getImageinfo().isEmpty())
                 .map(p -> p.getImageinfo().get(0).getUrl())
@@ -134,18 +128,14 @@ public class WikimediaService {
                 .orElse(null);
 
         } catch (Exception e) {
-            log.warn("Erreur recherche Wikimedia par GPS ({},{}) : {}",
-                lat, lng, e.getMessage());
+            log.warn("Erreur Wikimedia GPS ({},{}) : {}", lat, lng, e.getMessage());
             return null;
         }
     }
 
-    /**
-     * Récupère l'URL directe d'une image à partir de son titre Wikimedia
-     * Endpoint : action=query&prop=imageinfo&iiprop=url
-     */
     private String fetchImageUrl(String title) {
         try {
+            sleep();
             String url = UriComponentsBuilder.fromHttpUrl(WIKIMEDIA_URL)
                 .queryParam("action", "query")
                 .queryParam("titles", title)
@@ -154,19 +144,13 @@ public class WikimediaService {
                 .queryParam("format", "json")
                 .toUriString();
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("User-Agent", "YowYob-Crawler/1.0");
-            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-
-            ResponseEntity<String> response =
-                restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(
+                url, HttpMethod.GET, new HttpEntity<>(wikimediaHeaders()), String.class);
 
             WikimediaResponse parsed = objectMapper.readValue(
-                response.getBody(), WikimediaResponse.class
-            );
+                response.getBody(), WikimediaResponse.class);
 
-            if (parsed.getQuery() == null
-                    || parsed.getQuery().getPages() == null) {
+            if (parsed.getQuery() == null || parsed.getQuery().getPages() == null) {
                 return null;
             }
 
@@ -178,12 +162,11 @@ public class WikimediaService {
                 .orElse(null);
 
         } catch (Exception e) {
-            log.warn("Erreur fetchImageUrl pour '{}' : {}", title, e.getMessage());
+            log.warn("Erreur fetchImageUrl '{}' : {}", title, e.getMessage());
             return null;
         }
     }
 
-    // Filtre les URLs non-images
     private boolean isValidImageUrl(String url) {
         if (url == null) return false;
         String lower = url.toLowerCase();

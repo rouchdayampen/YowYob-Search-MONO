@@ -18,7 +18,7 @@
     <description>YowYob Platform - Modular Monolith</description>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
         <jwt.version>0.12.3</jwt.version>
     </properties>
 

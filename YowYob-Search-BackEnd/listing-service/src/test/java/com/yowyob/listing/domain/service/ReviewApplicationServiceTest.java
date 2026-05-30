@@ -1,12 +1,12 @@
-package com.yowyob.listing.service;
+package com.yowyob.listing.domain.service;
 
 import com.yowyob.listing.dto.ReviewRequest;
 import com.yowyob.listing.dto.ReviewResponse;
 import com.yowyob.listing.dto.ReviewSummary;
-import com.yowyob.listing.entity.Listing;
-import com.yowyob.listing.entity.Review;
-import com.yowyob.listing.repository.ListingRepository;
-import com.yowyob.listing.repository.ReviewRepository;
+import com.yowyob.listing.domain.model.Listing;
+import com.yowyob.listing.domain.model.Review;
+import com.yowyob.listing.domain.port.out.ListingRepository;
+import com.yowyob.listing.domain.port.out.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ReviewServiceTest {
+class ReviewApplicationServiceTest {
 
     @Mock
     private ReviewRepository reviewRepository;
@@ -35,7 +35,7 @@ class ReviewServiceTest {
     private ListingRepository listingRepository;
 
     @InjectMocks
-    private ReviewService reviewService;
+    private ReviewApplicationService reviewService;
 
     private Listing mockListing;
     private UUID listingId;
@@ -103,8 +103,8 @@ class ReviewServiceTest {
         mockListing.setAverageRating(4.0);
         mockListing.setReviewCount(2);
 
-        Review r1 = Review.builder().rating(5).userId("u1").listing(mockListing).build();
-        Review r2 = Review.builder().rating(3).userId("u2").listing(mockListing).build();
+        Review r1 = Review.builder().rating(5).userId("u1").listingId(listingId).build();
+        Review r2 = Review.builder().rating(3).userId("u2").listingId(listingId).build();
 
         when(listingRepository.findById(listingId))
             .thenReturn(Optional.of(mockListing));

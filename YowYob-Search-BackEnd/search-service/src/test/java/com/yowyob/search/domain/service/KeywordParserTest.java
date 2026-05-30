@@ -1,4 +1,4 @@
-package com.yowyob.search.service;
+package com.yowyob.search.domain.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

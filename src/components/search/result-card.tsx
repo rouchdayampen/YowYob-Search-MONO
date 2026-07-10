@@ -91,6 +91,13 @@ export default function ResultCard({ result }: ResultCardProps) {
             ✓ Annuaire officiel
           </div>
         )}
+
+        {/* Badge source Yowyob (produit de l'écosystème) */}
+        {result.source === 'YOWYOB_PRODUCT' && (
+          <div className="absolute top-2 left-2 inline-flex items-center gap-1 bg-blue-600 text-white rounded-full px-2 py-0.5 text-xs font-medium shadow">
+            ✓ Produit Yowyob
+          </div>
+        )}
       </div>
 
       {/* Contenu */}

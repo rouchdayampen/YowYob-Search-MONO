@@ -57,6 +57,7 @@ export interface AiSearchResponse {
   intent: string;
   rewrittenQuery: string;
   sources: SearchResult[];
+  subQueries?: string[];
   processingTimeMs: number;
   aiMode: boolean;
   success?: boolean;

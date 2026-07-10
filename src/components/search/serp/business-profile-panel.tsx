@@ -60,6 +60,11 @@ export function BusinessProfilePanel({ item, onClose }: BusinessProfilePanelProp
               <BadgeCheck size={12} />
               Annuaire officiel
             </span>
+          ) : item.source === 'YOWYOB_PRODUCT' ? (
+            <span className="inline-flex items-center gap-1 bg-blue-600 text-white rounded-full px-2.5 py-0.5 text-[11px] font-medium mb-1">
+              <BadgeCheck size={12} />
+              Produit Yowyob
+            </span>
           ) : (
             <span className="text-sm text-[#70757a] dark:text-gray-400 capitalize">
               {item.category || 'Commerce'}

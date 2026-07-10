@@ -17,18 +17,19 @@ export function OrganicResult({ item, onClick }: OrganicResultProps) {
   // Statut affiché seulement si réellement connu (openNow booléen). Pas d'horaires fixes → pas de Ouvert/Fermé.
   const isOpen = item.openNow;
 
-  // URL externe : website > googleMapsUrl > Google Search sur le nom + ".com"
   const externalUrl = getExternalUrl(item);
   const directionsUrl = getDirectionsUrl(item);
-  const siteUrl = item.website || item.googleMapsUrl || null;
-  const displayUrl = siteUrl
-    ? siteUrl.replace(/https?:\/\//, '').replace(/\/$/, '').substring(0, 45)
-    : 'google.com/search';
+  const displayUrl = externalUrl
+    ? externalUrl.replace(/https?:\/\//, '').replace(/\/$/, '').substring(0, 55)
+    : `yowyob.com/etablissement/${item.id}`;
 
   const handleTitleClick = () => {
     onClick?.(item);
     if (externalUrl) {
       window.open(externalUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      // Pas de site web : on ouvre la fiche interne
+      window.location.href = `/search/${item.id}`;
     }
   };
 
@@ -72,6 +73,13 @@ export function OrganicResult({ item, onClick }: OrganicResultProps) {
         <span className="inline-flex items-center gap-1 mb-1 bg-emerald-600 text-white rounded-full px-2.5 py-0.5 text-[11px] font-medium">
           <BadgeCheck size={12} />
           Annuaire officiel
+        </span>
+      )}
+      {/* Badge Produit Yowyob — visible pour les résultats de l'écosystème Yowyob */}
+      {item.source === 'YOWYOB_PRODUCT' && (
+        <span className="inline-flex items-center gap-1 mb-1 bg-blue-600 text-white rounded-full px-2.5 py-0.5 text-[11px] font-medium">
+          <BadgeCheck size={12} />
+          Produit Yowyob
         </span>
       )}
 

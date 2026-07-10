@@ -27,7 +27,11 @@ export function ProductCarousel({ results }: ProductCarouselProps) {
           <div
             key={item.id}
             className="flex-shrink-0 w-36 border border-[#dadce0] dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-md transition-shadow cursor-pointer bg-white dark:bg-gray-900"
-            onClick={() => window.open(getExternalUrl(item), '_blank', 'noopener,noreferrer')}
+            onClick={() => {
+              const url = getExternalUrl(item);
+              if (url) window.open(url, '_blank', 'noopener,noreferrer');
+              else window.location.href = `/search/${item.id}`;
+            }}
           >
             {/* Image */}
             <div className="h-28 w-full bg-gray-50 dark:bg-gray-800 relative">

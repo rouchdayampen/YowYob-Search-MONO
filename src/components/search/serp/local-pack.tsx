@@ -89,7 +89,9 @@ export function LocalPackSection({ results, query }: LocalPackProps) {
               className={`flex gap-3 px-4 py-3 cursor-pointer hover:bg-[#f8f9fa] dark:hover:bg-gray-700/50 transition-colors ${item.id === selected ? 'bg-[#e8f0fe] dark:bg-blue-900/20' : ''}`}
               onClick={() => {
                 setSelected(item.id === selected ? null : item.id);
-                window.open(getExternalUrl(item), '_blank', 'noopener,noreferrer');
+                const url = getExternalUrl(item);
+                if (url) window.open(url, '_blank', 'noopener,noreferrer');
+                else window.location.href = `/search/${item.id}`;
               }}
             >
               {/* Number pin */}
